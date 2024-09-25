@@ -2,3 +2,37 @@
  * Copyright (c) 2024, CATIE
  * SPDX-License-Identifier: Apache-2.0
  */
+
+ #include <zephyr/dt-bindings/input/input-event-codes.h>
+ #include <zephyr/dt-bindings/lvgl/lvgl.h>
+ #include <zephyr/dt-bindings/gpio/sixtron-header.h>
+ 
+ / {
+     chosen {
+         zephyr,display = &ili9163c;
+     };
+ };
+ 
+ &sixtron_spi {
+    status = "okay";
+
+    ili9163c: ili9163c@0 {
+        compatible = "ilitek,ili9163c";
+        reg = <0>;
+        spi-max-frequency = <10000000>;  /* Max SPI frequency */
+        pixel-format = <ILI9XXX_PIXEL_FORMAT_RGB565>;  
+        label = "ILI9163C";
+
+        /* SPI and GPIO Pin Mappings */
+        spi-cs-gpios = <&sixtron_connector SPI_SS GPIO_ACTIVE_LOW>;  /* Chip Select */
+        dc-gpios = <&sixtron_connector DIO6 GPIO_ACTIVE_HIGH>;       /* Data/Command */
+        backlight-gpios = <&sixtron_connector PWM1 GPIO_ACTIVE_HIGH>; /* Backlight PWM control */
+
+        width = <128>;
+        height = <160>;
+        rotation = <0>;
+    };
+};
+
+
+
