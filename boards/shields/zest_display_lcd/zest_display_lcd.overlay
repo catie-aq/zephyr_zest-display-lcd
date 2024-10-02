@@ -42,7 +42,7 @@
 		write-only;
 
 		ili9163c: ili9163c@0 {
-			compatible = "ilitek,ili9163";
+			compatible = "ilitek,ili9163c";
 			mipi-max-frequency = <DT_FREQ_M(20)>;
 			reg = <0>;
 			pixel-format = <ILI9XXX_PIXEL_FORMAT_RGB888>;
