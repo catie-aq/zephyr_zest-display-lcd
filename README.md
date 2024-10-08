@@ -3,8 +3,8 @@
 Zest_Display_LCD board support for Zephyr OS.
 
 ## Usage
-This board enables the following sensors:
-- List Zest_Display_LCD sensors here
+The `zephyr,display` label is exposed by the overlay, allowing to use the spi interface with the default 6TRON spi interface (`sixtron_spi`).
 
-:bulb: Sensors' drivers should also be added to your workspace:
-- List Zephyr OS drivers here
+The `backlight_lcd` label is exposed by the overlay, allowing to use the pwm interface with the default 6TRON pwm interface (`pwm1`).
+
+Shield name: `zest_display_lcd`
