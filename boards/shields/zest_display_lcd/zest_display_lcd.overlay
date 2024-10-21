@@ -8,7 +8,8 @@
 
 / {
 	chosen {
-		zephyr,display = &ili9163c0;
+		zephyr,display = &ili9163c;
+		zephyr,touch = &tsc20030;
 	};
 
 	pwm_devices {
@@ -44,4 +45,19 @@
 &timers1 {
 	status = "okay";
 	st,prescaler = <1000>;
+};
+
+&sixtron_i2c {
+	status = "okay";
+
+	tsc20030: tsc2003@48 {
+		compatible = "ti,tsc2003";
+		reg = <0x48>;
+		int-gpios = <&sixtron_connector DIO3 GPIO_ACTIVE_LOW>;
+		screen_width = <128>;
+		screen_height = <160>;
+		inverted_x;
+		inverted_y;
+		swapped_x_y;
+	};
 };
