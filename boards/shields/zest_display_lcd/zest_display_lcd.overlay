@@ -12,16 +12,6 @@
 		zephyr,touch = &tsc20030;
 	};
 
-	pwm_devices {
-		status = "okay";
-		compatible = "pwm-leds";
-
-		backlight_lcd: pwm-dev {
-			status = "okay";
-			pwms = <&pwm1 3 2000000 PWM_POLARITY_NORMAL>;
-		};
-	};
-
 	mipi_dbi {
 		compatible = "zephyr,mipi-dbi-spi";
 		dc-gpios = <&sixtron_connector DIO2 GPIO_ACTIVE_HIGH>;  /* Data/Command */
@@ -32,19 +22,15 @@
 
 		ili9163c: ili9163c@0 {
 			compatible = "ilitek,ili9163c";
-			mipi-max-frequency = <20000000>;  /* SPI frequency, 20 MHz */
-			reg = <0>;
+			mipi-max-frequency = <20000000>;  /* 20MHz */
+			reg = <0>; /* Chip select index for SPI bus */
 			pixel-format = <PANEL_PIXEL_FORMAT_RGB_888>;
 			width = <128>;
 			height = <160>;
 			rotation = <0>;
+			pwms = <&sixtron_pwm PWM1 1000000 PWM_POLARITY_NORMAL>;
 		};
 	};
-};
-
-&timers1 {
-	status = "okay";
-	st,prescaler = <1000>;
 };
 
 &sixtron_i2c {
