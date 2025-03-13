@@ -6,44 +6,60 @@
 #include <zephyr/dt-bindings/gpio/sixtron-header.h>
 #include <zephyr/dt-bindings/display/panel.h>
 
-/ {
-	chosen {
-		zephyr,display = &ili9163c;
-		zephyr,touch = &tsc20030;
+#define PERIPHERAL_ZEST_DISPLAY_LCD(port) \
+	spi_zest_display_lcd_##port: &sixtron_connector_##port##_spi {}; \
+	i2c_zest_display_lcd_##port: &sixtron_connector_##port##_i2c {};
+
+#define TSC2003_ZEST_DISPLAY_LCD(port) \
+	&i2c_zest_display_lcd_##port { \
+		status = "okay"; \
+		tsc2003_zest_display_lcd_##port: tsc2003##port@48 { \
+			compatible = "ti,tsc2003"; \
+			reg = <0x48>; \
+			int-gpios = <&sixtron_connector_##port DIO3 GPIO_ACTIVE_LOW>; \
+			screen_width = <128>; \
+			screen_height = <160>; \
+			inverted_x; \
+			inverted_y; \
+			swapped_x_y; \
+		}; \
 	};
 
-	mipi_dbi {
-		compatible = "zephyr,mipi-dbi-spi";
-		dc-gpios = <&sixtron_connector DIO2 GPIO_ACTIVE_HIGH>;  /* Data/Command */
-		spi-dev = <&sixtron_spi>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		write-only;
-
-		ili9163c: ili9163c@0 {
-			compatible = "ilitek,ili9163c";
-			mipi-max-frequency = <20000000>;  /* 20MHz */
-			reg = <0>; /* Chip select index for SPI bus */
-			pixel-format = <PANEL_PIXEL_FORMAT_RGB_888>;
-			width = <128>;
-			height = <160>;
-			rotation = <0>;
-			pwms = <&sixtron_pwm PWM1 1000000 PWM_POLARITY_NORMAL>;
-		};
+#define ILI9163C_ZEST_DISPLAY_LCD(port) \
+	/ { \
+		mipi_dbi_##port { \
+			compatible = "zephyr,mipi-dbi-spi"; \
+			dc-gpios = <&sixtron_connector_##port DIO2 GPIO_ACTIVE_HIGH>; \
+			spi-dev = <&spi_zest_display_lcd_##port>; \
+			#address-cells = <1>; \
+			#size-cells = <0>; \
+			write-only; \
+			ili9163c_zest_display_lcd_##port: ili9163c##port@0 { \
+				compatible = "ilitek,ili9163c"; \
+				mipi-max-frequency = <20000000>; \
+				reg = <0>; \
+				pixel-format = <PANEL_PIXEL_FORMAT_RGB_888>; \
+				width = <128>; \
+				height = <160>; \
+				rotation = <0>; \
+				pwms = <&sixtron_connector_##port##_pwm PWM1 1000000 PWM_POLARITY_NORMAL>; \
+			}; \
+		}; \
 	};
-};
 
-&sixtron_i2c {
-	status = "okay";
+#define DRIVERS_ZEST_DISPLAY_LCD(port) \
+	TSC2003_ZEST_DISPLAY_LCD(port) \
+	ILI9163C_ZEST_DISPLAY_LCD(port)
 
-	tsc20030: tsc2003@48 {
-		compatible = "ti,tsc2003";
-		reg = <0x48>;
-		int-gpios = <&sixtron_connector DIO3 GPIO_ACTIVE_LOW>;
-		screen_width = <128>;
-		screen_height = <160>;
-		inverted_x;
-		inverted_y;
-		swapped_x_y;
+#define CHOSEN_ZEST_DISPLAY_LCD(port) \
+	/ { \
+		chosen { \
+			zephyr,touch = &tsc2003_zest_display_lcd_##port; \
+			zephyr,display = &ili9163c_zest_display_lcd_##port; \
+		}; \
 	};
-};
+
+#define ZEST_DISPLAY_LCD(port) \
+	PERIPHERAL_ZEST_DISPLAY_LCD(port) \
+	DRIVERS_ZEST_DISPLAY_LCD(port) \
+	CHOSEN_ZEST_DISPLAY_LCD(port)
