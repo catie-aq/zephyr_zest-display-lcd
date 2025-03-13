@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2024, CATIE
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <zephyr/dt-bindings/gpio/sixtron-header.h>
+#include <zephyr/dt-bindings/display/panel.h>
+
+#define PERIPHERAL_ZEST_DISPLAY_LCD_ALT(port) \
+	spi_zest_display_lcd_##port: &sixtron_connector_##port##_spi {}; \
+	i2c_zest_display_lcd_##port: &sixtron_connector_##port##_i2c {};
+
+#define TSC2003_ZEST_DISPLAY_LCD_ALT(port, irq_pin) \
+	&i2c_zest_display_lcd_##port { \
+		status = "okay"; \
+		tsc2003_zest_display_lcd_##port: tsc2003##port@48 { \
+			compatible = "ti,tsc2003"; \
+			reg = <0x48>; \
+			int-gpios = <&sixtron_connector_##port irq_pin GPIO_ACTIVE_LOW>; \
+			screen_width = <128>; \
+			screen_height = <160>; \
+			inverted_x; \
+			inverted_y; \
+			swapped_x_y; \
+		}; \
+	};
+
+#define ILI9163C_ZEST_DISPLAY_LCD_ALT(port, nss_pin, dc_pin, pwm_pin) \
+	&spi_zest_display_lcd_##port { \
+		cs-gpios = <&sixtron_connector_##port nss_pin GPIO_ACTIVE_LOW>; \
+	}; \
+	/ { \
+		mipi_dbi_##port { \
+			compatible = "zephyr,mipi-dbi-spi"; \
+			dc-gpios = <&sixtron_connector_##port dc_pin GPIO_ACTIVE_HIGH>; \
+			spi-dev = <&spi_zest_display_lcd_##port>; \
+			#address-cells = <1>; \
+			#size-cells = <0>; \
+			write-only; \
+			ili9163c_zest_display_lcd_##port: ili9163c##port@0 { \
+				compatible = "ilitek,ili9163c"; \
+				mipi-max-frequency = <20000000>; \
+				reg = <0>; \
+				pixel-format = <PANEL_PIXEL_FORMAT_RGB_888>; \
+				width = <128>; \
+				height = <160>; \
+				rotation = <0>; \
+				pwms = <&sixtron_connector_##port##_pwm pwm_pin 1000000 PWM_POLARITY_NORMAL>; \
+			}; \
+		}; \
+	};
+
+#define DRIVERS_ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm, irq) \
+	TSC2003_ZEST_DISPLAY_LCD_ALT(port, irq) \
+	ILI9163C_ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm)
+
+#define CHOSEN_ZEST_DISPLAY_LCD_ALT(port) \
+	/ { \
+		chosen { \
+			zephyr,touch = &tsc2003_zest_display_lcd_##port; \
+			zephyr,display = &ili9163c_zest_display_lcd_##port; \
+		}; \
+	};
+
+#define ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm, irq) \
+	PERIPHERAL_ZEST_DISPLAY_LCD_ALT(port) \
+	DRIVERS_ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm, irq) \
+	CHOSEN_ZEST_DISPLAY_LCD_ALT(port)
