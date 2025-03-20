@@ -12,20 +12,22 @@ This board enables the following components:
 :bulb: These drivers should also be added to your workspace:
 
 - [ILITek ILI9163C driver](https://github.com/catie-aq/zephyr_ilitek-ili9163c)
-- [Texas Instruments TSC2003](https://github.com/catie-aq/zephyr_ti-tsc2003)
+- [Texas Instruments TSC2003 driver](https://github.com/catie-aq/zephyr_ti-tsc2003)
 
 :pushpin: This shield defines:
 
-- the default display controller: `zephyr,display` to `ili9163c`
-- the default touchscreen controller: `zephyr,touch` to `tsc20030`
+- the default display controller: `zephyr,display` to `ili9163c_zest_display_lcd_<X>`
+- the default touchscreen controller: `zephyr,touch` to `tsc2003_zest_display_lcd_<X>`
 
 :triangular_ruler: To use this shield:
 
 - Update your device tree by adding the `ZEST_DISPLAY_LCD(port)` macro to the `app.overlay` file.\
   Replace `port` with the number of the Zest_Core port to which the shield is connected, e.g.:
+
   ```c
   ZEST_DISPLAY_LCD(1) /* Zest_Display_LCD connected to Zest_Core first port */
   ```
+
 - Activate support for the shield by adding `--shield zest_display_lcd` to the west command.
 
 ## Advanced Usage
