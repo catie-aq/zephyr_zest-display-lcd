@@ -6,18 +6,18 @@ Zest_Display_LCD board support for Zephyr OS.
 
 This board enables the following components:
 
-- [ILITek ILI9163C](https://www.buydisplay.com/download/ic/ILI9163.pdf) display driver
-- [Texas Instruments TSC2003](https://www.ti.com/lit/ds/symlink/tsc2003.pdf) touchscreen driver
+- [ILITek ILI9163C](https://www.buydisplay.com/download/ic/ILI9163.pdf) LCD screen,
+- [Texas Instruments TSC2003](https://www.ti.com/lit/ds/symlink/tsc2003.pdf) touchscreen device
 
 :bulb: These drivers should also be added to your workspace:
 
-- [ILITek ILI9163C driver](https://github.com/catie-aq/zephyr_ilitek-ili9163c)
-- [Texas Instruments TSC2003 driver](https://github.com/catie-aq/zephyr_ti-tsc2003)
+- [ILITek ILI9163C driver](https://github.com/catie-aq/zephyr_ilitek-ili9163c),
+- [Texas Instruments TSC2003 driver](https://github.com/catie-aq/zephyr_ti-tsc2003).
 
 :pushpin: This shield defines:
 
-- the default display controller: `zephyr,display` to `ili9163c_zest_display_lcd_<X>`
-- the default touchscreen controller: `zephyr,touch` to `tsc2003_zest_display_lcd_<X>`
+- the default display controller: `zephyr,display` to `ili9163c_zest_display_lcd_<port>`,
+- the default touchscreen controller: `zephyr,touch` to `tsc2003_zest_display_lcd_<port>`.
 
 :triangular_ruler: To use this shield:
 
@@ -41,5 +41,5 @@ In that case, use instead the alternate variant of the shield:
   - `nss`: display controller SPI Slave Select pin,
   - `dc`: display controller Data/Command pin,
   - `pwm`: display backlight PWM pin,
-  - `irq`: touchscreen controller IRQ pin
+  - `irq`: touchscreen controller IRQ pin.
 - Activate support for the shield by adding `--shield zest_display_lcd_alt` to the west command.
