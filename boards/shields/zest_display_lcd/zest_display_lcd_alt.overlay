@@ -6,17 +6,17 @@
 #include <zephyr/dt-bindings/gpio/sixtron-header.h>
 #include <zephyr/dt-bindings/display/panel.h>
 
-#define PERIPHERAL_ZEST_DISPLAY_LCD(port) \
+#define PERIPHERAL_ZEST_DISPLAY_LCD_ALT(port) \
 	spi_zest_display_lcd_##port: &sixtron_connector_##port##_spi {}; \
 	i2c_zest_display_lcd_##port: &sixtron_connector_##port##_i2c {};
 
-#define TSC2003_ZEST_DISPLAY_LCD(port) \
+#define TSC2003_ZEST_DISPLAY_LCD_ALT(port, irq_pin) \
 	&i2c_zest_display_lcd_##port { \
 		status = "okay"; \
 		tsc2003_zest_display_lcd_##port: tsc2003##port@48 { \
 			compatible = "ti,tsc2003"; \
 			reg = <0x48>; \
-			int-gpios = <&sixtron_connector_##port DIO3 GPIO_ACTIVE_LOW>; \
+			int-gpios = <&sixtron_connector_##port irq_pin GPIO_ACTIVE_LOW>; \
 			screen_width = <128>; \
 			screen_height = <160>; \
 			inverted_x; \
@@ -25,11 +25,14 @@
 		}; \
 	};
 
-#define ILI9163C_ZEST_DISPLAY_LCD(port) \
+#define ILI9163C_ZEST_DISPLAY_LCD_ALT(port, nss_pin, dc_pin, pwm_pin) \
+	&spi_zest_display_lcd_##port { \
+		cs-gpios = <&sixtron_connector_##port nss_pin GPIO_ACTIVE_LOW>; \
+	}; \
 	/ { \
 		mipi_dbi_##port { \
 			compatible = "zephyr,mipi-dbi-spi"; \
-			dc-gpios = <&sixtron_connector_##port DIO2 GPIO_ACTIVE_HIGH>; \
+			dc-gpios = <&sixtron_connector_##port dc_pin GPIO_ACTIVE_HIGH>; \
 			spi-dev = <&spi_zest_display_lcd_##port>; \
 			#address-cells = <1>; \
 			#size-cells = <0>; \
@@ -42,16 +45,16 @@
 				width = <128>; \
 				height = <160>; \
 				rotation = <0>; \
-				pwms = <&sixtron_connector_##port##_pwm PWM1 1000000 PWM_POLARITY_NORMAL>; \
+				pwms = <&sixtron_connector_##port##_pwm pwm_pin 1000000 PWM_POLARITY_NORMAL>; \
 			}; \
 		}; \
 	};
 
-#define DRIVERS_ZEST_DISPLAY_LCD(port) \
-	TSC2003_ZEST_DISPLAY_LCD(port) \
-	ILI9163C_ZEST_DISPLAY_LCD(port)
+#define DRIVERS_ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm, irq) \
+	TSC2003_ZEST_DISPLAY_LCD_ALT(port, irq) \
+	ILI9163C_ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm)
 
-#define CHOSEN_ZEST_DISPLAY_LCD(port) \
+#define CHOSEN_ZEST_DISPLAY_LCD_ALT(port) \
 	/ { \
 		chosen { \
 			zephyr,touch = &tsc2003_zest_display_lcd_##port; \
@@ -59,7 +62,7 @@
 		}; \
 	};
 
-#define ZEST_DISPLAY_LCD(port) \
-	PERIPHERAL_ZEST_DISPLAY_LCD(port) \
-	DRIVERS_ZEST_DISPLAY_LCD(port) \
-	CHOSEN_ZEST_DISPLAY_LCD(port)
+#define ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm, irq) \
+	PERIPHERAL_ZEST_DISPLAY_LCD_ALT(port) \
+	DRIVERS_ZEST_DISPLAY_LCD_ALT(port, nss, dc, pwm, irq) \
+	CHOSEN_ZEST_DISPLAY_LCD_ALT(port)
