@@ -3,3 +3,6 @@
 
 config SHIELD_ZEST_DISPLAY_LCD
 	def_bool $(shields_list_contains,zest_display_lcd)
+
+config SHIELD_ZEST_DISPLAY_LCD_ALT
+	def_bool $(shields_list_contains,zest_display_lcd_alt)
