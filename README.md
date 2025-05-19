@@ -17,7 +17,8 @@ This board enables the following components:
 :pushpin: This shield defines:
 
 - the default display controller: `zephyr,display` to `ili9163c_zest_display_lcd_<port>`,
-- the default touchscreen controller: `zephyr,touch` to `tsc2003_zest_display_lcd_<port>`.
+- the default touchscreen controller: `zephyr,touch` to `tsc2003_zest_display_lcd_<port>`,
+- a mipi-dbi node: `mipi_zest_display_lcd_<port>`.
 
 :triangular_ruler: To use this shield:
 
