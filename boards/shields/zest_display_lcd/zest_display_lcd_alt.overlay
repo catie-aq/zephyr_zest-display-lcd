@@ -30,7 +30,7 @@
 		cs-gpios = <&sixtron_connector_##port nss_pin GPIO_ACTIVE_LOW>; \
 	}; \
 	/ { \
-		mipi_dbi_##port { \
+		mipi_zest_display_lcd_##port: mipi_dbi_##port { \
 			compatible = "zephyr,mipi-dbi-spi"; \
 			dc-gpios = <&sixtron_connector_##port dc_pin GPIO_ACTIVE_HIGH>; \
 			spi-dev = <&spi_zest_display_lcd_##port>; \
