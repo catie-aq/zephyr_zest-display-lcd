@@ -39,7 +39,7 @@
 			write-only; \
 			ili9163c_zest_display_lcd_##port: ili9163c##port@0 { \
 				compatible = "ilitek,ili9163c"; \
-				mipi-max-frequency = <20000000>; \
+				mipi-max-frequency = <10000000>; \
 				reg = <0>; \
 				pixel-format = <PANEL_PIXEL_FORMAT_RGB_888>; \
 				width = <128>; \
