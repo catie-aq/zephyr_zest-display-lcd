@@ -44,3 +44,17 @@ In that case, use instead the alternate variant of the shield:
   - `pwm`: display backlight PWM pin,
   - `irq`: touchscreen controller IRQ pin.
 - Activate support for the shield by adding `--shield zest_display_lcd_alt` to the west command.
+
+## SPI (MIPI) Frequency
+
+The driver sets the maximum SPI frequency to 10 MHz by default, to support all 6TRON Zest Core "out of the box" (especially STM32 boards).
+
+To override this, you will need to change the configuration in the board or app overlay file. For example:
+
+``````
+// Import Zest Display configuration from Shield using port number 1
+ZEST_DISPLAY_LCD(1)
+&ili9163c_zest_display_lcd_1{
+	mipi-max-frequency = <20000000>; // Override and increase max frequency
+};
+``````
