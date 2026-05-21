@@ -42,7 +42,6 @@
 				width = <128>; \
 				height = <160>; \
 				rotation = <0>; \
-				pwms = <&sixtron_connector_##port##_pwm PWM1 1000000 PWM_POLARITY_NORMAL>; \
 			}; \
 		}; \
 	};
